@@ -95,3 +95,21 @@ sys_getHelloWorld(void)
 {
   return getHelloWorld();
 }
+uint64
+sys_getProcTick(void)
+{
+  // uint xticks;
+  // acquire(&tickslock);
+  // xticks = ticks;
+  // release(&tickslock);
+  // return xticks;
+  int pid;
+
+  argint(0, &pid);
+  // /* get syscall argument */
+  // if (argint(0, &pid) < 0)
+  //     return -1;
+  
+  // printf(pid);
+  return printname(pid);
+}

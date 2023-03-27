@@ -5,6 +5,10 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+struct {
+  struct spinlock lock;
+  struct proc proc[NPROC];
+} ptable;
 
 struct cpu cpus[NCPU];
 
@@ -688,3 +692,35 @@ procdump(void)
    printf("Hello world");
    return 0;
  }
+ int
+ printname(int pid){
+    
+    int found = 0;
+    struct proc *p;
+    char name[16];
+
+    
+    for(p = proc; p < &proc[NPROC]; p++) {
+      acquire(&p->lock);
+      printf("%d: %s\n", p->pid, p->name);
+      printf("Searching for process with ID %d (0x%x)\n", pid, pid);
+      if (p->pid == pid) {
+            /* found */
+            printf("found\n");
+            found = 1;
+            /* copy string to our buffer. */
+            safestrcpy(name, p->name, sizeof name);
+            printf("%d: %s\n", pid, name);
+            break;
+        }
+      
+
+    }
+    release(&p->lock);
+
+    if (!found)
+        return -2;
+
+    
+    return 0;
+}
