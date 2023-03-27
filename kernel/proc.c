@@ -5,10 +5,6 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
-struct {
-  struct spinlock lock;
-  struct proc proc[NPROC];
-} ptable;
 
 struct cpu cpus[NCPU];
 
@@ -128,6 +124,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  p->ctime = ticks;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -711,13 +708,27 @@ procdump(void)
             /* copy string to our buffer. */
             safestrcpy(name, p->name, sizeof name);
             printf("%d: %s\n", pid, name);
+
+
+            uint xticks;
+            uint time_it_took;
+
+            acquire(&tickslock);
+            xticks = ticks;
+            release(&tickslock);
+
+            time_it_took = xticks - p->ctime;
+
+            printf("time it took:%d",time_it_took);
             break;
         }
       
+      release(&p->lock);
 
     }
     release(&p->lock);
 
+    
     if (!found)
         return -2;
 
