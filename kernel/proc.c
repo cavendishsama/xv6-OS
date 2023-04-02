@@ -681,3 +681,10 @@ procdump(void)
     printf("\n");
   }
 }
+
+int
+getHelloWorld(void)
+{
+  printf("Hello World\n");
+  return 0;
+}
