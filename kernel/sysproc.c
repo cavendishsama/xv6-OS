@@ -95,3 +95,12 @@ sys_getHelloWorld(void)
 {
   return getHelloWorld();
 }
+
+uint64
+sys_getProcTick(void)
+{
+  int pid;
+
+  argint(0, &pid);
+  return tickDiff(pid);
+}
