@@ -104,3 +104,14 @@ sys_getProcTick(void)
   argint(0, &pid);
   return tickDiff(pid);
 }
+
+uint64
+sys_sysinfo(void)
+{
+  uint64 info; // user pointer to struct stat
+
+  // if( (argaddr_modify(0, &info)) < 0)
+  //   return -1;
+  argaddr(0, &info);
+  return systeminfo(info);
+}
