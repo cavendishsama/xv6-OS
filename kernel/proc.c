@@ -720,3 +720,20 @@ tickDiff(int pid)
   printf("There is no process with such pid");  
   return 0;
 }
+
+// Get the number of processes whose state is not UNUSED. 
+int
+nproc(void)
+{
+  int n = 0;
+  struct proc *p;
+
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state != UNUSED)
+      ++n;
+    release(&p->lock);
+  }
+
+  return n;
+}
