@@ -5,6 +5,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -112,4 +113,18 @@ sys_getProcTick(void)
   
   // printf(pid);
   return printname(pid);
+}
+uint64
+sys_sysinfo(void)
+{
+  printf("entered sys_info");
+  uint64 in_struc;
+  // argint(0, &pid);
+  // /* get syscall argument */
+  // if (argint(0, &pid) < 0)
+  //     return -1;
+  argaddr(0,  &in_struc);
+  // printf(pid);
+  systeminfo(in_struc);
+  return 1;
 }

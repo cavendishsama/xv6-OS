@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "sysinfo.h"
 
 struct cpu cpus[NCPU];
 
@@ -734,4 +735,32 @@ procdump(void)
 
     
     return 0;
+}
+int
+ systeminfo(uint64 in_struc){
+    struct proc *p_2 = myproc();
+    struct sysinfo info;
+    uint xticks;
+    acquire(&tickslock);
+    xticks = ticks;
+    release(&tickslock);
+    printf("ticks:%d",xticks);
+    uint n = 0;
+    struct proc *p;
+
+    for(p = proc; p < &proc[NPROC]; p++) {
+      acquire(&p->lock);
+      if(p->state != UNUSED)
+        ++n;
+      release(&p->lock);
+    }
+    
+    info.uptime=xticks;
+    printf("using info:%d\n",info.uptime);
+    printf("numb of procc:%d\n",n);
+    if(copyout(p_2->pagetable, in_struc, (char *)&info, sizeof(info)) < 0)
+      return -1;
+    return 0;
+
+    
 }

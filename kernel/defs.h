@@ -8,6 +8,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct sysinfo;
 
 // bio.c
 void            binit(void);
@@ -63,6 +64,7 @@ void            ramdiskrw(struct buf*);
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
+int             freemem(void);
 
 // log.c
 void            initlog(int, struct superblock*);
@@ -108,6 +110,7 @@ int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
 void            procdump(void);
 int             getHelloWorld(void);
 int             printname(int pid);
+int             systeminfo(uint64);
 
 // swtch.S
 void            swtch(struct context*, struct context*);
