@@ -117,7 +117,6 @@ sys_getProcTick(void)
 uint64
 sys_sysinfo(void)
 {
-  printf("entered sys_info");
   uint64 in_struc;
   // argint(0, &pid);
   // /* get syscall argument */

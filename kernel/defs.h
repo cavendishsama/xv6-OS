@@ -65,6 +65,7 @@ void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
 int             freemem(void);
+long int        totalmem(void);
 
 // log.c
 void            initlog(int, struct superblock*);

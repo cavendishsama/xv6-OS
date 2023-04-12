@@ -96,3 +96,8 @@ freemem(void)
 
   return n * 4096;
 }
+long int 
+totalmem(void)
+{
+  return (PHYSTOP - KERNBASE) ;
+}

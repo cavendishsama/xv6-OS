@@ -744,7 +744,6 @@ int
     acquire(&tickslock);
     xticks = ticks;
     release(&tickslock);
-    printf("ticks:%d",xticks);
     uint n = 0;
     struct proc *p;
 
@@ -756,8 +755,13 @@ int
     }
     
     info.uptime=xticks;
-    printf("using info:%d\n",info.uptime);
-    printf("numb of procc:%d\n",n);
+    info.procs=n;
+    info.freeram=freemem();
+    info.totalram=totalmem();
+    // printf("using info:%d\n",info.uptime);
+    // printf("using info:%d\n",info.procs);
+    // printf("using info:%d\n",info.freeram);
+    // printf("using info:%d\n",info.totalram);
     if(copyout(p_2->pagetable, in_struc, (char *)&info, sizeof(info)) < 0)
       return -1;
     return 0;
