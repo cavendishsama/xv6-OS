@@ -14,6 +14,7 @@ struct proc proc[NPROC];
 struct proc *initproc;
 
 int nextpid = 1;
+int schedPolicy = 1;
 struct spinlock pid_lock;
 
 extern void forkret(void);
@@ -126,7 +127,9 @@ found:
   p->pid = allocpid();
   p->state = USED;
   p->ctime = ticks;
-
+  p->retime = 0;
+  p->rutime = 0;
+  p->stime = 0;
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
     freeproc(p);
@@ -451,24 +454,120 @@ scheduler(void)
   
   c->proc = 0;
   for(;;){
-    // Avoid deadlock by ensuring that devices can interrupt.
-    intr_on();
+      // Avoid deadlock by ensuring that devices can interrupt.
+      intr_on();
+    if(schedPolicy == 0){
+        for(p = proc; p < &proc[NPROC]; p++) {
+          acquire(&p->lock);
+          if(p->state == RUNNABLE) {
+            // Switch to chosen process.  It is the process's job
+            // to release its lock and then reacquire it
+            // before jumping back to us.
+            p->state = RUNNING;
+            c->proc = p;
+            swtch(&c->context, &p->context);
 
-    for(p = proc; p < &proc[NPROC]; p++) {
-      acquire(&p->lock);
-      if(p->state == RUNNABLE) {
-        // Switch to chosen process.  It is the process's job
-        // to release its lock and then reacquire it
-        // before jumping back to us.
-        p->state = RUNNING;
-        c->proc = p;
-        swtch(&c->context, &p->context);
+            // Process is done running for now.
+            // It should have changed its p->state before coming back.
+            c->proc = 0;
+          }
+          release(&p->lock);
+        }
+    }
+    if(schedPolicy == 1){
+      struct proc *minP = 0;
 
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
+      // Loop over process table looking for process to run.
+      
+      for(p = proc; p < &proc[NPROC]; p++)
+      {
+        acquire(&p->lock);
+        if(p->state != RUNNABLE){
+                release(&p->lock);
+                continue;
+        }
+        // printf("pid: %d \n",p->pid);
+        // printf("p itself %d \n",p);
+        // ignore init and sh processes from FCFS
+        if(p->pid > 2)
+        {
+          if (minP != 0) {
+          // here I find the process with the lowest creation time (the first one that was created)
+            if(p->ctime < minP->ctime)
+              minP = p;
+          }
+          else
+            minP = p;
+        }
+        else{
+          // // printf("else of p->pid\n");
+          // // printf("p itself %d \n",p);
+          // if(p != 0)
+          // {
+          //     c->proc = p;
+          //     p->state = RUNNING;
+          //     swtch(&c->context, &p->context);
+          //     c->proc = 0;
+          //     // printf("here inside if \n");
+          // }
+          release(&p->lock);
+          // // printf("countinue \n");
+          continue;
+
+        }
+        p = minP;
+        // printf("here %d\n",p);
+        if(p != 0)
+        {
+            printf("pid %d \n",p->pid);
+            c->proc = p;
+            p->state = RUNNING;
+            swtch(&c->context, &p->context);
+            c->proc = 0;
+            // printf("here \n");
+            // release(&p->lock);
+        }
+        release(&p->lock);
+        printf("here \n");
+
       }
-      release(&p->lock);
+      //pid<=2
+      for(p = proc; p < &proc[NPROC]; p++)
+      {
+        // printf("pid<=2");
+        acquire(&p->lock);
+        // printf("here");
+        if(p->state != RUNNABLE){
+                release(&p->lock);
+                continue;
+        }
+        // printf("pid: %d \n",p->pid);
+        // printf("p itself tooye <2 %d \n",p);
+        // ignore init and sh processes from FCFS
+        if(p->pid <= 2)
+        {
+          
+          printf("too if e p->pid %d \n",p->pid);
+          // printf("p itself %d \n",p);
+          if(p != 0)
+          {
+              c->proc = p;
+              p->state = RUNNING;
+              swtch(&c->context, &p->context);
+              c->proc = 0;
+              // printf("here inside if \n");
+          }
+          release(&p->lock);
+          // printf("countinue \n");
+        }
+        else{
+          release(&p->lock);
+          continue;
+        }
+        
+
+      }
+
     }
   }
 }
@@ -767,4 +866,26 @@ int
     return 0;
 
     
+}
+void updateStatus() {
+  struct proc *p;
+ 
+  for(p = proc; p < &proc[NPROC]; p++){
+     acquire(&p->lock);
+    switch(p->state) {
+      case RUNNABLE:
+        p->retime++;
+        break;
+      case SLEEPING:
+        p->stime++;
+        break;
+      case RUNNING:
+        p->rutime++;
+        break;
+      default:
+        ;
+    }
+    release(&p->lock);
+  }
+  release(&p->lock);
 }
