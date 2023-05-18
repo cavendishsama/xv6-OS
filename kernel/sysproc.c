@@ -127,3 +127,11 @@ sys_sysinfo(void)
   systeminfo(in_struc);
   return 1;
 }
+int
+sys_changePolicy(void)
+{
+  printf("^^^^^^^^^^^^^^^");
+  int schedNum;
+  argint(0, &schedNum);
+  return changePolicy(schedNum);
+}

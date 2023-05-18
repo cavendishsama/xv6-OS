@@ -14,7 +14,7 @@ struct proc proc[NPROC];
 struct proc *initproc;
 
 int nextpid = 1;
-int schedPolicy = 1;
+int schedPolicy = 0;
 struct spinlock pid_lock;
 
 extern void forkret(void);
@@ -382,6 +382,7 @@ exit(int status)
 
   p->xstate = status;
   p->state = ZOMBIE;
+  p->ttime = ticks;
 
   release(&wait_lock);
 
@@ -532,9 +533,11 @@ scheduler(void)
 
       }
       //pid<=2
+      // printf("bamboozool");
       for(p = proc; p < &proc[NPROC]; p++)
       {
-        // printf("pid<=2");
+
+        // printf("pid<=2 ,entered");
         acquire(&p->lock);
         // printf("here");
         if(p->state != RUNNABLE){
@@ -888,4 +891,11 @@ void updateStatus() {
     release(&p->lock);
   }
   release(&p->lock);
+}
+
+int
+changePolicy(int schedNum){
+  schedPolicy = schedNum;
+  // return 0;
+  return schedPolicy;
 }

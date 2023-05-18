@@ -135,6 +135,7 @@ UPROGS=\
 	$U/_sysTest\
 	$U/_sysTestTick\
 	$U/_sysTestInfo\
+	$U/_changePolicy\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

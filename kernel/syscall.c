@@ -104,6 +104,7 @@ extern uint64 sys_close(void);
 extern uint64 sys_getHelloWorld(void);
 extern uint64 sys_getProcTick(void);
 extern uint64 sys_sysinfo(void);
+extern uint64 sys_changePolicy(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -132,6 +133,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getHelloWorld]   sys_getHelloWorld,
 [SYS_getProcTick]   sys_getProcTick,
 [SYS_sysinfo]   sys_sysinfo,
+[SYS_changePolicy]    sys_changePolicy,
 };
 
 void

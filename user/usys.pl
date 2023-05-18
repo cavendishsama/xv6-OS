@@ -39,3 +39,4 @@ entry("uptime");
 entry("getHelloWorld");
 entry("getProcTick");
 entry("sysinfo");
+entry("changePolicy");
