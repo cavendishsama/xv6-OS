@@ -24,3 +24,8 @@
 #define SYS_getProcTick  23
 #define SYS_sysinfo  24
 #define SYS_changePolicy 25
+
+#define SYS_getctime 26
+#define SYS_getttime 27
+#define SYS_getrutime 28
+#define SYS_Newwait  29

@@ -135,3 +135,42 @@ sys_changePolicy(void)
   argint(0, &schedNum);
   return changePolicy(schedNum);
 }
+
+int
+sys_getctime(void)
+{
+  int pid;
+  argint(0, &pid);
+  return (int)getctime(pid);
+}
+
+int
+sys_getttime(void)
+{
+  int pid;
+  argint(0, &pid);
+  return getttime(pid);
+}
+
+uint64
+sys_getrutime(void)
+{
+  int pid;
+  argint(0, &pid);
+  return getrutime(pid);
+}
+
+uint64 sys_Newwait(void) {
+  int *retime, *rutime, *stime;
+  
+  argint(0, (void*)&retime);
+  argint(1, (void*)&rutime);
+  argint(2, (void*)&stime);
+  // if (argptr(0, (void*)&retime, sizeof(retime)) < 0)
+  //   return -1;
+  // if (argptr(1, (void*)&rutime, sizeof(retime)) < 0)
+  //   return -1;
+  // if (argptr(2, (void*)&stime, sizeof(stime)) < 0)
+  //   return -1;
+  return wait2(retime, rutime, stime);
+}

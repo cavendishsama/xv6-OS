@@ -110,3 +110,6 @@ struct proc {
   int retime;                  //ready time
   int stime;                   //sleeping time
 };
+
+// ####
+void updateStatus();

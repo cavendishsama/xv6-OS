@@ -872,7 +872,7 @@ int
 }
 void updateStatus() {
   struct proc *p;
- 
+  // printf("move into update");
   for(p = proc; p < &proc[NPROC]; p++){
      acquire(&p->lock);
     switch(p->state) {
@@ -883,6 +883,7 @@ void updateStatus() {
         p->stime++;
         break;
       case RUNNING:
+        // printf("runtime added");
         p->rutime++;
         break;
       default:
@@ -890,7 +891,7 @@ void updateStatus() {
     }
     release(&p->lock);
   }
-  release(&p->lock);
+  // release(&p->lock);
 }
 
 int
@@ -898,4 +899,52 @@ changePolicy(int schedNum){
   schedPolicy = schedNum;
   // return 0;
   return schedPolicy;
+}
+
+uint
+getctime(int pid){
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+     acquire(&p->lock);
+    if(p->pid == pid){
+      release(&p->lock);
+      return p->ctime;
+    }
+    release(&p->lock);
+
+  }
+  return 0;
+}
+
+int
+getttime(int pid){
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    
+    if(p->pid == pid){
+      release(&p->lock);
+      return p->ttime;
+    }
+    release(&p->lock);
+  }
+  return 0;
+}
+
+int
+getrutime(int pid){
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->pid == pid){
+      release(&p->lock);
+      return p->rutime;
+    }
+    release(&p->lock);
+  }
+  return 0;
+}
+int wait2(int *retime, int *rutime, int *stime) {
+  printf("this system call hasnt been implemented yet");
+  return 0;
 }

@@ -113,6 +113,10 @@ int             getHelloWorld(void);
 int             printname(int pid);
 int             systeminfo(uint64);
 int             changePolicy(int);
+uint            getctime(int);
+int             getttime(int);
+int             getrutime(int);
+int             wait2(int*, int*, int*);
 
 // swtch.S
 void            swtch(struct context*, struct context*);

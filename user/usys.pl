@@ -40,3 +40,6 @@ entry("getHelloWorld");
 entry("getProcTick");
 entry("sysinfo");
 entry("changePolicy");
+entry("getctime");
+entry("getttime");
+entry("getrutime");
