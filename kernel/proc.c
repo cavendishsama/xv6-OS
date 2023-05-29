@@ -130,6 +130,7 @@ found:
   p->retime = 0;
   p->rutime = 0;
   p->stime = 0;
+  p->ttime=0;
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
     freeproc(p);
@@ -173,6 +174,10 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
+  p->ctime=0;
+  p->ttime=0;
+  p->rutime=0;
+  p->stime=0;
   p->state = UNUSED;
 }
 
@@ -409,10 +414,10 @@ wait(uint64 addr)
       if(pp->parent == p){
         // make sure the child isn't still in exit() or swtch().
         acquire(&pp->lock);
-
         havekids = 1;
         if(pp->state == ZOMBIE){
           // Found one.
+          printf("found the child with rutime of %d \n",pp->rutime);
           pid = pp->pid;
           if(addr != 0 && copyout(p->pagetable, addr, (char *)&pp->xstate,
                                   sizeof(pp->xstate)) < 0) {
@@ -477,8 +482,8 @@ scheduler(void)
     }
     if(schedPolicy == 1){
       struct proc *minP = 0;
-
-      // Loop over process table looking for process to run.
+      // c->proc=0;
+      // // Loop over process table looking for process to run.
       
       for(p = proc; p < &proc[NPROC]; p++)
       {
@@ -516,21 +521,78 @@ scheduler(void)
           continue;
 
         }
-        p = minP;
-        // printf("here %d\n",p);
-        if(p != 0)
-        {
-            printf("pid %d \n",p->pid);
-            c->proc = p;
-            p->state = RUNNING;
-            swtch(&c->context, &p->context);
-            c->proc = 0;
-            // printf("here \n");
-            // release(&p->lock);
-        }
         release(&p->lock);
-        printf("here \n");
+      }
+      // p = minP;
+      
+      // release(&p->lock);
+      
+      // printf("here\n");
 
+      // if(p != 0)
+      // {
+        
+      //     printf("before acquiring minP\n");
+      //     acquire(&p->lock);
+      //     printf("pid %d \n",p->pid,p->state);
+      //     p->state = RUNNING;
+          
+      //     printf("here 1\n");
+          
+      //     c->proc = p;
+          
+      //     printf("here 2 \n");
+
+      //     swtch(&c->context, &p->context);
+          
+      //     printf("here 3\n");
+      //     c->proc = 0;
+      //     printf("here 4\n");
+      //     // printf("finished pid>2 and released succesfully\n");
+        
+      //     release(&p->lock);
+      //     printf("here 5\n");
+      
+      // }
+      // // release(&p->lock);
+      // // printf("here \n");
+      // //////////////////
+      //pid=>2
+      // printf("bamboozool");
+      for(p = proc; p < &proc[NPROC]; p++)
+      {
+
+        // printf("pid<=2 ,entered");
+        acquire(&p->lock);
+        // printf("here");
+        if(p->state != RUNNABLE){
+                release(&p->lock);
+                continue;
+        }
+        // printf("pid: %d \n",p->pid);
+        // printf("p itself tooye <2 %d \n",p);
+        // ignore init and sh processes from FCFS
+        if(p->pid >= 2)
+        {
+          
+          // printf("too if e p->pid %d \n",p->pid);
+          // printf("if result %d \n",p==minP);
+          if(p != 0 && p==minP)
+          {
+              c->proc = p;
+              p->state = RUNNING;
+              swtch(&c->context, &p->context);
+              c->proc = 0;
+              // printf("here inside if avalish @@ \n");
+          }
+          release(&p->lock);
+          // printf("countinue \n");
+        }
+        else{
+          release(&p->lock);
+          continue;
+        }
+        // ////////////////////////
       }
       //pid<=2
       // printf("bamboozool");
@@ -558,7 +620,7 @@ scheduler(void)
               p->state = RUNNING;
               swtch(&c->context, &p->context);
               c->proc = 0;
-              // printf("here inside if \n");
+              printf("here inside if \n");
           }
           release(&p->lock);
           // printf("countinue \n");
@@ -919,12 +981,15 @@ getctime(int pid){
 int
 getttime(int pid){
   struct proc *p;
+  int t_ret;
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     
     if(p->pid == pid){
+      t_ret=p->ttime;
+      printf("process state:%d",p->state);
       release(&p->lock);
-      return p->ttime;
+      return t_ret;
     }
     release(&p->lock);
   }
@@ -944,7 +1009,49 @@ getrutime(int pid){
   }
   return 0;
 }
-int wait2(int *retime, int *rutime, int *stime) {
-  printf("this system call hasnt been implemented yet");
-  return 0;
+int Newwait(int *retime, int *rutime, int *stime) {
+  struct proc *pp;
+  int havekids, pid;
+  struct proc *p = myproc();
+
+  acquire(&wait_lock);
+
+  for(;;){
+    // Scan through table looking for exited children.
+    havekids = 0;
+    for(pp = proc; pp < &proc[NPROC]; pp++){
+      if(pp->parent == p){
+        // make sure the child isn't still in exit() or swtch().
+        acquire(&pp->lock);
+        printf("trying to f z \n");
+        havekids = 1;
+        if(pp->state == ZOMBIE){
+          // Found one.
+          printf("found the child with rutime of %d \n",pp->rutime);
+          pid = pp->pid;
+          // if(addr != 0 && copyout(p->pagetable, addr, (char *)&pp->xstate,
+          //                         sizeof(pp->xstate)) < 0) {
+          //   release(&pp->lock);
+          //   release(&wait_lock);
+          //   return -1;
+          // }
+          freeproc(pp);
+          release(&pp->lock);
+          release(&wait_lock);
+          return pid;
+        }
+        release(&pp->lock);
+      }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || killed(p)){
+      release(&wait_lock);
+      return -1;
+    }
+    
+    // Wait for a child to exit.
+    sleep(p, &wait_lock);  //DOC: wait-sleep
+  }
+
 }

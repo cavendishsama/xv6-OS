@@ -172,5 +172,5 @@ uint64 sys_Newwait(void) {
   //   return -1;
   // if (argptr(2, (void*)&stime, sizeof(stime)) < 0)
   //   return -1;
-  return wait2(retime, rutime, stime);
+  return Newwait(retime, rutime, stime);
 }

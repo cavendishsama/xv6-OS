@@ -30,6 +30,7 @@ int changePolicy(int);
 int getttime(int);
 int getrutime(int);
 int getctime(int);
+int Newwait(int *, int *, int*);
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

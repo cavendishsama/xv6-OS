@@ -43,3 +43,4 @@ entry("changePolicy");
 entry("getctime");
 entry("getttime");
 entry("getrutime");
+entry("Newwait");

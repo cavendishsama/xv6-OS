@@ -116,7 +116,7 @@ int             changePolicy(int);
 uint            getctime(int);
 int             getttime(int);
 int             getrutime(int);
-int             wait2(int*, int*, int*);
+int             Newwait(int*, int*, int*);
 
 // swtch.S
 void            swtch(struct context*, struct context*);
