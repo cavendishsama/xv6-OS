@@ -61,6 +61,11 @@ void            ramdiskintr(void);
 void            ramdiskrw(struct buf*);
 
 // kalloc.c
+void            kref_lock();
+void            kref_unlock();
+uint64          inc_refcnt (uint64 pa);
+uint64          dec_refcnt(uint64 pa);
+void            ref_init_cnt();
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);

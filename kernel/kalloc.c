@@ -135,7 +135,7 @@ kalloc(void)
   //if r != NULL then set reference count to one
     kref_lock();
     set_refcnt((uint64)r,1);
-    printf("allocated %d",kref.cnt[REF_CNT_IDX((uint64)r)]);
+    // printf("allocated %d",kref.cnt[REF_CNT_IDX((uint64)r)]);
     kref_unlock();
     memset((char*)r, 5, PGSIZE); // fill with junk
   }
