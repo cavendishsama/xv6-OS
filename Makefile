@@ -137,6 +137,7 @@ UPROGS=\
 	$U/_sysTestInfo\
 	$U/_changePolicy\
 	$U/_sched_test\
+	$U/_cowTest\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
