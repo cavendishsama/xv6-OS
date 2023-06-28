@@ -417,7 +417,10 @@ wait(uint64 addr)
         havekids = 1;
         if(pp->state == ZOMBIE){
           // Found one.
-          printf("found the child with rutime of %d \n",pp->rutime);
+          // printf("found the child with rutime of %d \n",pp->rutime);
+          // printf("found the child with rutime of %d \n",pp->ttime);
+          // printf("found the child with rutime of %d \n",pp->stime);
+
           pid = pp->pid;
           if(addr != 0 && copyout(p->pagetable, addr, (char *)&pp->xstate,
                                   sizeof(pp->xstate)) < 0) {
@@ -492,8 +495,6 @@ scheduler(void)
                 release(&p->lock);
                 continue;
         }
-        // printf("pid: %d \n",p->pid);
-        // printf("p itself %d \n",p);
         // ignore init and sh processes from FCFS
         if(p->pid > 2)
         {
@@ -517,76 +518,32 @@ scheduler(void)
           //     // printf("here inside if \n");
           // }
           release(&p->lock);
-          // // printf("countinue \n");
           continue;
 
         }
         release(&p->lock);
       }
-      // p = minP;
-      
-      // release(&p->lock);
-      
-      // printf("here\n");
 
-      // if(p != 0)
-      // {
-        
-      //     printf("before acquiring minP\n");
-      //     acquire(&p->lock);
-      //     printf("pid %d \n",p->pid,p->state);
-      //     p->state = RUNNING;
-          
-      //     printf("here 1\n");
-          
-      //     c->proc = p;
-          
-      //     printf("here 2 \n");
-
-      //     swtch(&c->context, &p->context);
-          
-      //     printf("here 3\n");
-      //     c->proc = 0;
-      //     printf("here 4\n");
-      //     // printf("finished pid>2 and released succesfully\n");
-        
-      //     release(&p->lock);
-      //     printf("here 5\n");
-      
-      // }
-      // // release(&p->lock);
-      // // printf("here \n");
-      // //////////////////
-      //pid=>2
-      // printf("bamboozool");
       for(p = proc; p < &proc[NPROC]; p++)
       {
 
-        // printf("pid<=2 ,entered");
         acquire(&p->lock);
-        // printf("here");
         if(p->state != RUNNABLE){
                 release(&p->lock);
                 continue;
         }
-        // printf("pid: %d \n",p->pid);
-        // printf("p itself tooye <2 %d \n",p);
         // ignore init and sh processes from FCFS
         if(p->pid >= 2)
         {
           
-          // printf("too if e p->pid %d \n",p->pid);
-          // printf("if result %d \n",p==minP);
           if(p != 0 && p==minP)
           {
               c->proc = p;
               p->state = RUNNING;
               swtch(&c->context, &p->context);
               c->proc = 0;
-              // printf("here inside if avalish @@ \n");
           }
           release(&p->lock);
-          // printf("countinue \n");
         }
         else{
           release(&p->lock);
@@ -595,25 +552,19 @@ scheduler(void)
         // ////////////////////////
       }
       //pid<=2
-      // printf("bamboozool");
       for(p = proc; p < &proc[NPROC]; p++)
       {
 
-        // printf("pid<=2 ,entered");
         acquire(&p->lock);
-        // printf("here");
         if(p->state != RUNNABLE){
                 release(&p->lock);
                 continue;
         }
-        // printf("pid: %d \n",p->pid);
-        // printf("p itself tooye <2 %d \n",p);
         // ignore init and sh processes from FCFS
         if(p->pid <= 2)
         {
           
           printf("too if e p->pid %d \n",p->pid);
-          // printf("p itself %d \n",p);
           if(p != 0)
           {
               c->proc = p;
@@ -623,7 +574,6 @@ scheduler(void)
               printf("here inside if \n");
           }
           release(&p->lock);
-          // printf("countinue \n");
         }
         else{
           release(&p->lock);
@@ -1023,11 +973,13 @@ int Newwait(int *retime, int *rutime, int *stime) {
       if(pp->parent == p){
         // make sure the child isn't still in exit() or swtch().
         acquire(&pp->lock);
-        printf("trying to f z \n");
+        // printf("trying to f z \n");
         havekids = 1;
         if(pp->state == ZOMBIE){
           // Found one.
           printf("found the child with rutime of %d \n",pp->rutime);
+          printf("found the child with ttime of %d \n",pp->ttime);
+          printf("found the child with stime of %d \n",pp->stime);
           pid = pp->pid;
           // if(addr != 0 && copyout(p->pagetable, addr, (char *)&pp->xstate,
           //                         sizeof(pp->xstate)) < 0) {

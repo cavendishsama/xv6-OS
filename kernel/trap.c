@@ -55,7 +55,7 @@ int cowtrap(uint64 va){
   // dec_refcnt(pa1); 
   kfree((void *)pa1); 
  
-  printf("Check \n "); 
+  // printf("Check \n "); 
  
  
   return 0;

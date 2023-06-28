@@ -10,7 +10,7 @@ int sumArray[10000];
 
 int main(int argc, char **argv){
     changePolicy(1);
-    int n = 3;
+    int n = 32;
     // int pidlist[n];
     int ppid = getpid();
     int children = 0;
@@ -31,11 +31,11 @@ int main(int argc, char **argv){
             // printf("process of i entered %d \n",i);
             // int x = getpid();
 
-            for(int i=0;i<10000;i++)
+            for(int i=0;i<100;i++)
                 firstArray[i]=i;
-            for(int i=0;i<10000;i++)
+            for(int i=0;i<100;i++)
                 secondArray[i]=i;
-            for(int i=0;i<10000;i++){
+            for(int i=0;i<100;i++){
                 sumArray[i]=firstArray[i]+secondArray[i];
                 printf("%d \n",sumArray);
             }
@@ -69,7 +69,7 @@ int main(int argc, char **argv){
         
         for(int i=0;i<n;i++) 
         {
-            printf("going to wait");
+            printf("going to wait - ");
             Newwait(&retime, &rutime, &stime);
         
         }
