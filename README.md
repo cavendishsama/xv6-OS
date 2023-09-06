@@ -1,7 +1,7 @@
 # xv6 Operating System
 - contributors
-> phase1: [JavadZandiyeh](https://github.com/JavadZandiyeh)<br/>
-> Phase2 & phase3: [JavadZandiyeh](https://github.com/JavadZandiyeh) & [rajabi2001](https://github.com/pooya-sharifi)
+> phase1: [cavendishsama](https://https://github.com/cavendishsama)<br/>
+> Phase2 & phase3: [cavendishsama](https://https://github.com/cavendishsama) & [pooya-sharifi](https://github.com/pooya-sharifi)
 
 ## Phase 1: Adding new System Calls into xv6-riscv
 - start with [xv6-riscv](https://github.com/mit-pdos/xv6-riscv)
@@ -25,4 +25,6 @@
 > Creation Time<br/>
 > Sleeping Time
 
-## Phase 3:
+## Phase 3: Change Fork systemcall
+- Copy on Write(Cop)
+- Managing Page Fault
