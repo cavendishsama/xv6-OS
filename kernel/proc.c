@@ -895,7 +895,7 @@ void updateStatus() {
         p->stime++;
         break;
       case RUNNING:
-        printf("runtime added");
+        // printf("runtime added");
         p->rutime++;
         break;
       default:
