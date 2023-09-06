@@ -25,6 +25,6 @@
 > Creation Time<br/>
 > Sleeping Time
 
-## Phase 3: Change Fork systemcall
+## Phase 3: Change Fork system call
 - Copy on Write(Cop)
 - Managing Page Fault
